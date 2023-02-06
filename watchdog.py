@@ -7,15 +7,10 @@ url = os.environ['URL']
 unavailble_msg = os.environ['UNAVAILABLE_MSG']
 
 
-def get_updated_changes():
+def get_changes():
   chrome_options = Options()
   chrome_options.add_argument('--no-sandbox')
   chrome_options.add_argument('--disable-dev-shm-usage')
-  # # instantiate options
-  # options = webdriver.ChromeOptions()
-
-  # # run browser in headless mode
-  # options.headless = True
 
   # instantiate driver
   driver = webdriver.Chrome(options=chrome_options)
@@ -23,9 +18,15 @@ def get_updated_changes():
   # get the entire website content
   driver.get(url)
 
-  string = driver.find_element(By.CLASS_NAME, 'office-form-info-title').text
+  global string
+
+  try:
+    string = driver.find_element(By.CLASS_NAME, 'office-form-info-title').text
   # return string
-  if string == unavailble_msg:
-    return True
-  else:
-    return False
+  except:
+    return "Element not found. Visit ASAP"
+  finally:
+    if string == unavailble_msg:
+      return "Unavailable"
+    else:
+      return "Something's changed. Visit ASAP"

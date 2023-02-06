@@ -1,61 +1,28 @@
-import os
-import discord
-# from selenium import webdriver
-# from selenium.webdriver.common.by import By
-# from selenium.webdriver.chrome.options import Options
-# from selenium.webdriver.chrome.service import Service as ChromeService
-# from webdriver_manager.chrome import ChromeDriverManager
+import os, discord
 from watchdog import *
+from discord.ext import tasks
+from datetime import time
 
 intents = discord.Intents.default()
 intents.message_content = True
 
 token = os.environ['TOKEN']
-# url = os.environ['URL']
-# unavailble_msg = os.environ['UNAVAILABLE_MSG']
 
 client = discord.Client(intents=intents)
-
-# def get_updated_changes():
-#   chrome_options = Options()
-#   chrome_options.add_argument('--no-sandbox')
-#   chrome_options.add_argument('--disable-dev-shm-usage')
-#   # # instantiate options
-#   # options = webdriver.ChromeOptions()
-
-#   # # run browser in headless mode
-#   # options.headless = True
-
-#   # instantiate driver
-#   driver = webdriver.Chrome(options=chrome_options)
-
-#   # get the entire website content
-#   # link = 'https://forms.office.com/Pages/ResponsePage.aspx?id=Dn-P5TuH0EqOE8MdyxqbRVdXhRCpAN1Epz7XeQGs7gpUNkxSQjVST01HT1dFN0EzU1Q5TVdaOFhGTi4u'
-
-#   # get the entire website content
-#   driver.get(url)
-
-#   string = driver.find_element(By.CLASS_NAME, 'office-form-info-title').text
-#   # return string
-#   if string == unavailble_msg:
-#     return True
-#   else:
-#     return False
 
 
 @client.event
 async def on_ready():
   print(f'We have logged in as {client.user}')
+  watchdog.start()
 
 
-@client.event
-async def on_message(message):
-  if message.author == client.user:
-    return
-
-  if message.content.startswith('hello'):
-    update = get_updated_changes()
-    await message.channel.send(update)
+# UTC time 18:00PM = GTM+6 time 12:00AM
+@tasks.loop(time=time(hour=18, minute=0, second=0))
+async def watchdog():
+  channel = client.get_channel(1072061023613370398)
+  update = get_changes()
+  await channel.send(update)
 
 
 client.run(token)
