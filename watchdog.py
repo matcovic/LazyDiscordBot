@@ -18,11 +18,9 @@ def get_changes():
   # get the entire website content
   driver.get(url)
 
-  global string
-
   try:
+    global string
     string = driver.find_element(By.CLASS_NAME, 'office-form-info-title').text
-  # return string
   except:
     return "Element not found. Visit ASAP"
   finally:

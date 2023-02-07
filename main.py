@@ -2,6 +2,7 @@ import os, discord
 from watchdog import *
 from discord.ext import tasks
 from datetime import time
+from keep_alive import keep_alive
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -25,4 +26,5 @@ async def watchdog():
   await channel.send(update)
 
 
+keep_alive()
 client.run(token)
