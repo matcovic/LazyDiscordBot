@@ -2,6 +2,8 @@ import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 url = os.environ['URL']
 unavailble_msg = os.environ['UNAVAILABLE_MSG']
@@ -17,14 +19,19 @@ def get_changes():
 
   # get the entire website content
   driver.get(url)
+  delay = 10  # seconds
 
+  global element
   try:
-    global string
-    string = driver.find_element(By.CLASS_NAME, 'office-form-info-title').text
+    element = WebDriverWait(driver, delay).until(
+      EC.presence_of_element_located(
+        (By.CLASS_NAME, 'office-form-info-title'))).text
+    print("Page is ready!")
   except:
+    print("Loading took too much time!")
     return "Element not found. Visit ASAP"
-  finally:
-    if string == unavailble_msg:
+  else:
+    if element == unavailble_msg:
       return "Unavailable"
     else:
       return "Something's changed. Visit ASAP"
