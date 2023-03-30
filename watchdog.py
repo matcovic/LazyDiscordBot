@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 url = os.environ['URL']
 unavailble_msg = os.environ['UNAVAILABLE_MSG']
+img_url = os.environ['IMG_URL']
 
 
 def get_changes():
@@ -23,15 +24,20 @@ def get_changes():
 
   global element
   try:
-    element = WebDriverWait(driver, delay).until(
-      EC.presence_of_element_located(
-        (By.CLASS_NAME, 'office-form-info-title'))).text
+    # element = WebDriverWait(driver, delay).until(
+    #   EC.presence_of_element_located((By.CLASS_NAME, '-r-10')))
+    element = driver.find_element(
+      By.XPATH, "//img[contains(@class,'-_p-9')]").get_attribute('src')
     print("Page is ready!")
+    # print(element)
   except:
     print("Loading took too much time!")
     return "Element not found. Visit ASAP"
   else:
-    if element == unavailble_msg:
+    if element == img_url:
       return "Unavailable"
     else:
       return "Something's changed. Visit ASAP"
+
+
+# https://plainenglish.io/blog/web-scraping-images-with-python-and-selenium-792e452abd70

@@ -20,6 +20,7 @@ async def on_ready():
 
 # UTC time 18:00PM = GTM+6 time 12:00AM
 @tasks.loop(time=time(hour=18, minute=0, second=0))
+# @tasks.loop(seconds=10)
 async def watchdog():
   channel = client.get_channel(1072307221121216553)
   update = get_changes()
