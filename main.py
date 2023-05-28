@@ -1,31 +1,12 @@
 import os, discord
-from watchdog import *
-from discord.ext import tasks
-from datetime import time
 from keep_alive import keep_alive
+from bot import run_bot
 
-intents = discord.Intents.default()
-intents.message_content = True
-
-token = os.environ['TOKEN']
-
-client = discord.Client(intents=intents)
-
-
-@client.event
-async def on_ready():
-  print(f'We have logged in as {client.user}')
-  watchdog.start()
-
-
-# UTC time 18:00PM = GTM+6 time 12:00AM
-@tasks.loop(time=time(hour=18, minute=0, second=0))
-# @tasks.loop(seconds=10)
-async def watchdog():
-  channel = client.get_channel(1072307221121216553)
-  update = get_changes()
-  await channel.send(update)
-
-
-# keep_alive()
-client.run(token)
+while __name__ == '__main__':
+  try:
+    keep_alive()
+    run_bot()
+  except discord.errors.HTTPException as e:
+    print(e)
+    print("\n\n\nBLOCKED BY RATE LIMITS\nRESTARTING NOW\n\n\n")
+    os.system('kill 1')

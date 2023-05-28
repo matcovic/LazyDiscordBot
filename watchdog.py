@@ -1,4 +1,5 @@
-import os
+import os, time
+import asyncio
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -15,19 +16,18 @@ def get_changes():
   chrome_options.add_argument('--no-sandbox')
   chrome_options.add_argument('--disable-dev-shm-usage')
 
-  # instantiate driver
+  # instantiate driverS
   driver = webdriver.Chrome(options=chrome_options)
 
   # get the entire website content
+  driver.implicitly_wait(10)
   driver.get(url)
-  delay = 10  # seconds
+  # delay = 10  # seconds
 
   global element
   try:
-    # element = WebDriverWait(driver, delay).until(
-    #   EC.presence_of_element_located((By.CLASS_NAME, '-r-10')))
     element = driver.find_element(
-      By.XPATH, "//img[contains(@class,'-_p-9')]").get_attribute('src')
+      By.XPATH, "//img[contains(@role,'presentation')]").get_attribute('src')
     print("Page is ready!")
     # print(element)
   except:
@@ -35,8 +35,10 @@ def get_changes():
     return "Element not found. Visit ASAP"
   else:
     if element == img_url:
+      print("Unavailable")
       return "Unavailable"
     else:
+      print("Something's changed. Visit ASAP")
       return "Something's changed. Visit ASAP"
 
 
